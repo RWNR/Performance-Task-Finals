@@ -1,12 +1,14 @@
-extends Sprite2D
+extends Area2D
 
-@onready speed = 400
+@onready var speed = 10
+@onready var bgm = $"../BGM"
+@onready var enemy_hit = $"../EnemyHit"
 
 func _ready():
-	pass
+	bgm.play()
 
 func _process(delta):
-	velocity = Vector2.ZERO
+	var velocity = Vector2.ZERO
 	
 	if Input.is_action_pressed("move_up"):
 		velocity.y -= 1
@@ -17,5 +19,13 @@ func _process(delta):
 	if Input.is_action_pressed("move_right"):
 		velocity.x += 1
 	
-	if velocity.normalized() > 0:
-		velocity.length() * delta
+	if velocity.length() > 0:
+		velocity.normalized() * delta
+	
+	position += velocity * speed
+
+
+func _on_body_entered(body):
+	hide()
+	bgm.stop()
+	enemy_hit.play()
